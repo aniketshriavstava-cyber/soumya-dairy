@@ -4,110 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SOUMYA DAIRY</title>
-
 <style>
 *{box-sizing:border-box}
-
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f2f7f3;
-color:#222
-}
-
-.header{
-background:linear-gradient(135deg,#087f3d,#22b765);
-color:white;
-padding:20px;
-text-align:center
-}
-
-.header h1{
-margin:0
-}
-
-.container{
-width:94%;
-max-width:700px;
-margin:15px auto
-}
-
-.card{
-background:white;
-padding:18px;
-margin-bottom:15px;
-border-radius:15px;
-box-shadow:0 3px 12px #ddd
-}
-
-h2{
-color:#087f3d;
-margin-top:0
-}
-
-input,select{
-width:100%;
-padding:13px;
-margin:6px 0 12px;
-border:1px solid #ddd;
-border-radius:8px
-}
-
-button{
-border:0;
-border-radius:8px;
-padding:12px;
-font-weight:bold
-}
-
-.green{
-width:100%;
-background:#087f3d;
-color:white
-}
-
-.red{
-background:#e53935;
-color:white;
-margin-top:10px
-}
-
-#app{
-display:none
-}
-
-.msg{
-text-align:center;
-font-weight:bold;
-margin-top:10px
-}
-
-.badge{
-display:inline-block;
-padding:7px 12px;
-border-radius:20px;
-background:#e8f6ed;
-color:#087f3d;
-font-weight:bold
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-font-size:12px
-}
-
-th{
-background:#087f3d;
-color:white;
-padding:9px
-}
-
-td{
-padding:9px;
-text-align:center;
-border-bottom:1px solid #eee
-}
+body{margin:0;font-family:Arial,sans-serif;background:#f2f7f3;color:#222}
+.header{background:linear-gradient(135deg,#087f3d,#22b765);color:white;padding:20px;text-align:center}
+.header h1{margin:0}
+.container{width:94%;max-width:700px;margin:15px auto}
+.card{background:white;padding:18px;margin-bottom:15px;border-radius:15px;box-shadow:0 3px 12px #ddd}
+h2{color:#087f3d;margin-top:0}
+input,select{width:100%;padding:13px;margin:6px 0 12px;border:1px solid #ddd;border-radius:8px}
+button{border:0;border-radius:8px;padding:12px;font-weight:bold}
+.green{width:100%;background:#087f3d;color:white}
+.red{background:#e53935;color:white;margin-top:10px}
+#app{display:none}
+.msg{text-align:center;font-weight:bold;margin-top:10px}
+.badge{display:inline-block;padding:7px 12px;border-radius:20px;background:#e8f6ed;color:#087f3d;font-weight:bold}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#087f3d;color:white;padding:9px}
+td{padding:9px;text-align:center;border-bottom:1px solid #eee}
 </style>
 </head>
 
@@ -120,184 +34,89 @@ border-bottom:1px solid #eee
 
 <div class="container">
 
-<!-- LOGIN -->
-
 <div class="card" id="loginBox">
-
 <h2>🔐 Login</h2>
 
-<input
-id="email"
-type="email"
-placeholder="Email">
+<input id="email" type="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 
-<input
-id="password"
-type="password"
-placeholder="Password">
+<button class="green" onclick="login()">Login करें</button>
 
-<button
-class="green"
-onclick="login()">
-
-Login करें
-
-</button>
-
-<div
-class="msg"
-id="loginMsg">
+<div class="msg" id="loginMsg"></div>
 </div>
 
-</div>
-
-
-<!-- APP -->
 
 <div id="app">
 
 <div class="card">
-
 <h2>👤 Account</h2>
 
 <div id="userEmail"></div>
-
 <br>
 
-<span
-class="badge"
-id="role">
-</span>
+<span class="badge" id="role"></span>
 
 <br><br>
 
-<button
-class="red"
-onclick="logout()">
-
-Logout
-
-</button>
-
+<button class="red" onclick="logout()">Logout</button>
 </div>
 
 
-<!-- WORKER PANEL -->
-
-<div
-class="card"
-id="workerPanel">
+<div class="card" id="workerPanel">
 
 <h2>🐃 भैंस की Entry</h2>
 
-<input
-id="worker"
-placeholder="मजदूर का नाम">
-
-<input
-id="buffalo"
-placeholder="भैंस ID / नाम">
-
-<input
-id="breed"
-placeholder="नस्ल">
-
-<input
-id="age"
-type="number"
-placeholder="उम्र">
+<input id="worker" placeholder="मजदूर का नाम">
+<input id="buffalo" placeholder="भैंस ID / नाम">
+<input id="breed" placeholder="नस्ल">
+<input id="age" type="number" placeholder="उम्र">
 
 <select id="status">
-
 <option>दूध दे रही है</option>
 <option>गर्भवती</option>
 <option>सूखी</option>
-
 </select>
 
-<button
-class="green"
-onclick="saveBuffalo()">
-
+<button class="green" onclick="saveBuffalo()">
 🐃 भैंस Save करें
-
 </button>
 
-<div
-class="msg"
-id="saveMsg">
-</div>
-
+<div class="msg" id="saveMsg"></div>
 </div>
 
 
-<!-- MILK PANEL -->
-
-<div
-class="card"
-id="milkPanel">
+<div class="card" id="milkPanel">
 
 <h2>🥛 दूध की Entry</h2>
 
-<input
-id="milkBuffalo"
-placeholder="भैंस ID">
-
-<input
-id="milk"
-type="number"
-step="0.1"
-placeholder="दूध लीटर">
-
-<input
-id="rate"
-type="number"
-placeholder="रेट ₹/लीटर">
+<input id="milkBuffalo" placeholder="भैंस ID">
+<input id="milk" type="number" step="0.1" placeholder="दूध लीटर">
+<input id="rate" type="number" placeholder="रेट ₹/लीटर">
 
 <select id="shift">
-
 <option>सुबह</option>
 <option>शाम</option>
-
 </select>
 
-<button
-class="green"
-onclick="saveMilk()">
-
+<button class="green" onclick="saveMilk()">
 🥛 दूध Save करें
-
 </button>
 
-<div
-class="msg"
-id="milkMsg">
-</div>
-
+<div class="msg" id="milkMsg"></div>
 </div>
 
 
-<!-- OWNER -->
-
-<div
-class="card"
-id="ownerPanel"
-style="display:none">
+<div class="card" id="ownerPanel" style="display:none">
 
 <h2>👨‍💼 Owner Dashboard</h2>
 
-<p>
-सभी Dairy Records
-</p>
+<p>सभी Dairy Records</p>
 
-<div id="records">
-Records loading...
-</div>
+<div id="records">Records loading...</div>
 
 </div>
 
 </div>
-
 </div>
 
 
@@ -309,7 +128,6 @@ initializeApp
 from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-
 import {
 getAuth,
 signInWithEmailAndPassword,
@@ -318,7 +136,6 @@ signOut
 }
 from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
 
 import {
 getFirestore,
@@ -329,8 +146,6 @@ getDocs
 from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-
-/* FIREBASE */
 
 const firebaseConfig={
 
@@ -358,20 +173,16 @@ measurementId:
 };
 
 
-const app=
-initializeApp(firebaseConfig);
+const app=initializeApp(firebaseConfig);
 
-const auth=
-getAuth(app);
+const auth=getAuth(app);
 
-const db=
-getFirestore(app);
+const db=getFirestore(app);
 
 
 /* OWNER EMAIL */
 
-const OWNER_EMAIL=
-"sourabhsingh1928@gmail.com";
+const OWNER_EMAIL="im9208455049@gmail.com";
 
 
 /* LOGIN */
@@ -386,17 +197,13 @@ const password=
 document.getElementById("password")
 .value;
 
-
 if(!email||!password){
 
 document.getElementById("loginMsg")
-.innerText=
-"Email और Password भरें";
+.innerText="Email और Password भरें";
 
 return;
-
 }
-
 
 try{
 
@@ -409,8 +216,7 @@ password
 }catch(error){
 
 document.getElementById("loginMsg")
-.innerText=
-"Email या Password गलत है";
+.innerText="Email या Password गलत है";
 
 }
 
@@ -428,38 +234,28 @@ signOut(auth);
 
 /* USER CHECK */
 
-onAuthStateChanged(
-auth,
-(user)=>{
+onAuthStateChanged(auth,(user)=>{
 
 if(!user){
 
-document.getElementById(
-"loginBox"
-).style.display="block";
+document.getElementById("loginBox")
+.style.display="block";
 
-document.getElementById(
-"app"
-).style.display="none";
+document.getElementById("app")
+.style.display="none";
 
 return;
 
 }
 
+document.getElementById("loginBox")
+.style.display="none";
 
-document.getElementById(
-"loginBox"
-).style.display="none";
+document.getElementById("app")
+.style.display="block";
 
-document.getElementById(
-"app"
-).style.display="block";
-
-
-document.getElementById(
-"userEmail"
-).innerText=
-user.email;
+document.getElementById("userEmail")
+.innerText=user.email;
 
 
 /* OWNER */
@@ -470,17 +266,11 @@ user.email.toLowerCase()
 OWNER_EMAIL.toLowerCase()
 ){
 
-document.getElementById(
-"role"
-).innerText=
-"OWNER";
+document.getElementById("role")
+.innerText="OWNER";
 
-
-document.getElementById(
-"ownerPanel"
-).style.display=
-"block";
-
+document.getElementById("ownerPanel")
+.style.display="block";
 
 loadRecords();
 
@@ -491,191 +281,127 @@ loadRecords();
 
 else{
 
-document.getElementById(
-"role"
-).innerText=
-"WORKER";
+document.getElementById("role")
+.innerText="WORKER";
 
-
-document.getElementById(
-"ownerPanel"
-).style.display=
-"none";
+document.getElementById("ownerPanel")
+.style.display="none";
 
 }
 
 });
 
 
-/* BUFFALO */
+/* BUFFALO SAVE */
 
-window.saveBuffalo=
-async function(){
+window.saveBuffalo=async function(){
 
-const user=
-auth.currentUser;
+const user=auth.currentUser;
 
 if(!user)return;
 
-
 const worker=
-document.getElementById(
-"worker"
-).value.trim();
+document.getElementById("worker")
+.value.trim();
 
 const buffalo=
-document.getElementById(
-"buffalo"
-).value.trim();
+document.getElementById("buffalo")
+.value.trim();
 
 const breed=
-document.getElementById(
-"breed"
-).value.trim();
+document.getElementById("breed")
+.value.trim();
 
 const age=
-document.getElementById(
-"age"
-).value;
+document.getElementById("age")
+.value;
 
 const status=
-document.getElementById(
-"status"
-).value;
-
+document.getElementById("status")
+.value;
 
 if(!worker||!buffalo){
 
-alert(
-"मजदूर और भैंस ID भरें"
-);
+alert("मजदूर और भैंस ID भरें");
 
 return;
 
 }
-
 
 await addDoc(
 collection(db,"dairyEntries"),
 {
 
 type:"buffalo",
-
 worker:worker,
-
 buffalo:buffalo,
-
 breed:breed,
-
 age:age,
-
 status:status,
-
 uid:user.uid,
-
-createdAt:
-new Date().toISOString()
+createdAt:new Date().toISOString()
 
 }
 );
 
-
-document.getElementById(
-"saveMsg"
-).innerText=
-"✅ भैंस की Entry Save हो गई";
+document.getElementById("saveMsg")
+.innerText="✅ भैंस की Entry Save हो गई";
 
 };
 
 
-/* MILK */
+/* MILK SAVE */
 
-window.saveMilk=
-async function(){
+window.saveMilk=async function(){
 
-const user=
-auth.currentUser;
+const user=auth.currentUser;
 
 if(!user)return;
 
-
 const worker=
-document.getElementById(
-"worker"
-).value.trim();
+document.getElementById("worker")
+.value.trim();
 
 const buffalo=
-document.getElementById(
-"milkBuffalo"
-).value.trim();
+document.getElementById("milkBuffalo")
+.value.trim();
 
 const milk=
-Number(
-document.getElementById(
-"milk"
-).value
-);
+Number(document.getElementById("milk").value);
 
 const rate=
-Number(
-document.getElementById(
-"rate"
-).value
-);
+Number(document.getElementById("rate").value);
 
 const shift=
-document.getElementById(
-"shift"
-).value;
+document.getElementById("shift").value;
 
+if(!worker||!buffalo||!milk||!rate){
 
-if(
-!worker||
-!buffalo||
-!milk||
-!rate
-){
-
-alert(
-"सभी जानकारी भरें"
-);
+alert("सभी जानकारी भरें");
 
 return;
 
 }
-
 
 await addDoc(
 collection(db,"dairyEntries"),
 {
 
 type:"milk",
-
 worker:worker,
-
 buffalo:buffalo,
-
 milk:milk,
-
 rate:rate,
-
 total:milk*rate,
-
 shift:shift,
-
 uid:user.uid,
-
-createdAt:
-new Date().toISOString()
+createdAt:new Date().toISOString()
 
 }
 );
 
-
-document.getElementById(
-"milkMsg"
-).innerText=
-"✅ दूध की Entry Save हो गई";
+document.getElementById("milkMsg")
+.innerText="✅ दूध की Entry Save हो गई";
 
 };
 
@@ -685,19 +411,12 @@ document.getElementById(
 async function loadRecords(){
 
 const box=
-document.getElementById(
-"records"
-);
-
+document.getElementById("records");
 
 const snap=
 await getDocs(
-collection(
-db,
-"dairyEntries"
-)
+collection(db,"dairyEntries")
 );
-
 
 let html=`
 
@@ -712,53 +431,30 @@ let html=`
 
 `;
 
+snap.forEach((item)=>{
 
-snap.forEach(
-(item)=>{
-
-const d=
-item.data();
-
+const d=item.data();
 
 let details="-";
 
-
 if(d.type==="milk"){
 
-details=
-d.milk+
-" L / ₹"+
-d.rate;
+details=d.milk+" L / ₹"+d.rate;
+
+}else{
+
+details=d.breed||"-";
 
 }
-
-else{
-
-details=
-d.breed||"-";
-
-}
-
 
 html+=`
 
 <tr>
 
-<td>
-${d.type}
-</td>
-
-<td>
-${d.worker||"-"}
-</td>
-
-<td>
-${d.buffalo||"-"}
-</td>
-
-<td>
-${details}
-</td>
+<td>${d.type}</td>
+<td>${d.worker||"-"}</td>
+<td>${d.buffalo||"-"}</td>
+<td>${details}</td>
 
 </tr>
 
@@ -766,13 +462,9 @@ ${details}
 
 });
 
+html+="</table>";
 
-html+=
-"</table>";
-
-
-box.innerHTML=
-html;
+box.innerHTML=html;
 
 }
 
