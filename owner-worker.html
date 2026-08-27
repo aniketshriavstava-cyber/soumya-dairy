@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SOUMYA DAIRY</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f2f7f3;
+color:#222
+}
+
+.header{
+background:linear-gradient(135deg,#087f3d,#22b765);
+color:white;
+padding:20px;
+text-align:center
+}
+
+.header h1{
+margin:0
+}
+
+.container{
+width:94%;
+max-width:700px;
+margin:15px auto
+}
+
+.card{
+background:white;
+padding:18px;
+margin-bottom:15px;
+border-radius:15px;
+box-shadow:0 3px 12px #ddd
+}
+
+h2{
+color:#087f3d;
+margin-top:0
+}
+
+input,select{
+width:100%;
+padding:13px;
+margin:6px 0 12px;
+border:1px solid #ddd;
+border-radius:8px
+}
+
+button{
+border:0;
+border-radius:8px;
+padding:12px;
+font-weight:bold
+}
+
+.green{
+width:100%;
+background:#087f3d;
+color:white
+}
+
+.red{
+background:#e53935;
+color:white;
+margin-top:10px
+}
+
+#app{
+display:none
+}
+
+.msg{
+text-align:center;
+font-weight:bold;
+margin-top:10px
+}
+
+.badge{
+display:inline-block;
+padding:7px 12px;
+border-radius:20px;
+background:#e8f6ed;
+color:#087f3d;
+font-weight:bold
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:12px
+}
+
+th{
+background:#087f3d;
+color:white;
+padding:9px
+}
+
+td{
+padding:9px;
+text-align:center;
+border-bottom:1px solid #eee
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>🐃 SOUMYA DAIRY</h1>
+<p>Dairy Management System</p>
+</div>
+
+<div class="container">
+
+<!-- LOGIN -->
+
+<div class="card" id="loginBox">
+
+<h2>🔐 Login</h2>
+
+<input
+id="email"
+type="email"
+placeholder="Email">
+
+<input
+id="password"
+type="password"
+placeholder="Password">
+
+<button
+class="green"
+onclick="login()">
+
+Login करें
+
+</button>
+
+<div
+class="msg"
+id="loginMsg">
+</div>
+
+</div>
+
+
+<!-- APP -->
+
+<div id="app">
+
+<div class="card">
+
+<h2>👤 Account</h2>
+
+<div id="userEmail"></div>
+
+<br>
+
+<span
+class="badge"
+id="role">
+</span>
+
+<br><br>
+
+<button
+class="red"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+
+<!-- WORKER PANEL -->
+
+<div
+class="card"
+id="workerPanel">
+
+<h2>🐃 भैंस की Entry</h2>
+
+<input
+id="worker"
+placeholder="मजदूर का नाम">
+
+<input
+id="buffalo"
+placeholder="भैंस ID / नाम">
+
+<input
+id="breed"
+placeholder="नस्ल">
+
+<input
+id="age"
+type="number"
+placeholder="उम्र">
+
+<select id="status">
+
+<option>दूध दे रही है</option>
+<option>गर्भवती</option>
+<option>सूखी</option>
+
+</select>
+
+<button
+class="green"
+onclick="saveBuffalo()">
+
+🐃 भैंस Save करें
+
+</button>
+
+<div
+class="msg"
+id="saveMsg">
+</div>
+
+</div>
+
+
+<!-- MILK PANEL -->
+
+<div
+class="card"
+id="milkPanel">
+
+<h2>🥛 दूध की Entry</h2>
+
+<input
+id="milkBuffalo"
+placeholder="भैंस ID">
+
+<input
+id="milk"
+type="number"
+step="0.1"
+placeholder="दूध लीटर">
+
+<input
+id="rate"
+type="number"
+placeholder="रेट ₹/लीटर">
+
+<select id="shift">
+
+<option>सुबह</option>
+<option>शाम</option>
+
+</select>
+
+<button
+class="green"
+onclick="saveMilk()">
+
+🥛 दूध Save करें
+
+</button>
+
+<div
+class="msg"
+id="milkMsg">
+</div>
+
+</div>
+
+
+<!-- OWNER -->
+
+<div
+class="card"
+id="ownerPanel"
+style="display:none">
+
+<h2>👨‍💼 Owner Dashboard</h2>
+
+<p>
+सभी Dairy Records
+</p>
+
+<div id="records">
+Records loading...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+/* FIREBASE */
+
+const firebaseConfig={
+
+apiKey:
+"AIzaSyCtbpXgCr73z6UN_digd0oQoKPwdDRH0_c",
+
+authDomain:
+"soumya-dairy.firebaseapp.com",
+
+projectId:
+"soumya-dairy",
+
+storageBucket:
+"soumya-dairy.firebasestorage.app",
+
+messagingSenderId:
+"546193027551",
+
+appId:
+"1:546193027551:web:4ad8d012f7c4cd1e21146a",
+
+measurementId:
+"G-Q9M7XQY70J"
+
+};
+
+
+const app=
+initializeApp(firebaseConfig);
+
+const auth=
+getAuth(app);
+
+const db=
+getFirestore(app);
+
+
+/* OWNER EMAIL */
+
+const OWNER_EMAIL=
+"sourabhsingh1928@gmail.com";
+
+
+/* LOGIN */
+
+window.login=async function(){
+
+const email=
+document.getElementById("email")
+.value.trim();
+
+const password=
+document.getElementById("password")
+.value;
+
+
+if(!email||!password){
+
+document.getElementById("loginMsg")
+.innerText=
+"Email और Password भरें";
+
+return;
+
+}
+
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+}catch(error){
+
+document.getElementById("loginMsg")
+.innerText=
+"Email या Password गलत है";
+
+}
+
+};
+
+
+/* LOGOUT */
+
+window.logout=function(){
+
+signOut(auth);
+
+};
+
+
+/* USER CHECK */
+
+onAuthStateChanged(
+auth,
+(user)=>{
+
+if(!user){
+
+document.getElementById(
+"loginBox"
+).style.display="block";
+
+document.getElementById(
+"app"
+).style.display="none";
+
+return;
+
+}
+
+
+document.getElementById(
+"loginBox"
+).style.display="none";
+
+document.getElementById(
+"app"
+).style.display="block";
+
+
+document.getElementById(
+"userEmail"
+).innerText=
+user.email;
+
+
+/* OWNER */
+
+if(
+user.email.toLowerCase()
+===
+OWNER_EMAIL.toLowerCase()
+){
+
+document.getElementById(
+"role"
+).innerText=
+"OWNER";
+
+
+document.getElementById(
+"ownerPanel"
+).style.display=
+"block";
+
+
+loadRecords();
+
+}
+
+
+/* WORKER */
+
+else{
+
+document.getElementById(
+"role"
+).innerText=
+"WORKER";
+
+
+document.getElementById(
+"ownerPanel"
+).style.display=
+"none";
+
+}
+
+});
+
+
+/* BUFFALO */
+
+window.saveBuffalo=
+async function(){
+
+const user=
+auth.currentUser;
+
+if(!user)return;
+
+
+const worker=
+document.getElementById(
+"worker"
+).value.trim();
+
+const buffalo=
+document.getElementById(
+"buffalo"
+).value.trim();
+
+const breed=
+document.getElementById(
+"breed"
+).value.trim();
+
+const age=
+document.getElementById(
+"age"
+).value;
+
+const status=
+document.getElementById(
+"status"
+).value;
+
+
+if(!worker||!buffalo){
+
+alert(
+"मजदूर और भैंस ID भरें"
+);
+
+return;
+
+}
+
+
+await addDoc(
+collection(db,"dairyEntries"),
+{
+
+type:"buffalo",
+
+worker:worker,
+
+buffalo:buffalo,
+
+breed:breed,
+
+age:age,
+
+status:status,
+
+uid:user.uid,
+
+createdAt:
+new Date().toISOString()
+
+}
+);
+
+
+document.getElementById(
+"saveMsg"
+).innerText=
+"✅ भैंस की Entry Save हो गई";
+
+};
+
+
+/* MILK */
+
+window.saveMilk=
+async function(){
+
+const user=
+auth.currentUser;
+
+if(!user)return;
+
+
+const worker=
+document.getElementById(
+"worker"
+).value.trim();
+
+const buffalo=
+document.getElementById(
+"milkBuffalo"
+).value.trim();
+
+const milk=
+Number(
+document.getElementById(
+"milk"
+).value
+);
+
+const rate=
+Number(
+document.getElementById(
+"rate"
+).value
+);
+
+const shift=
+document.getElementById(
+"shift"
+).value;
+
+
+if(
+!worker||
+!buffalo||
+!milk||
+!rate
+){
+
+alert(
+"सभी जानकारी भरें"
+);
+
+return;
+
+}
+
+
+await addDoc(
+collection(db,"dairyEntries"),
+{
+
+type:"milk",
+
+worker:worker,
+
+buffalo:buffalo,
+
+milk:milk,
+
+rate:rate,
+
+total:milk*rate,
+
+shift:shift,
+
+uid:user.uid,
+
+createdAt:
+new Date().toISOString()
+
+}
+);
+
+
+document.getElementById(
+"milkMsg"
+).innerText=
+"✅ दूध की Entry Save हो गई";
+
+};
+
+
+/* OWNER RECORDS */
+
+async function loadRecords(){
+
+const box=
+document.getElementById(
+"records"
+);
+
+
+const snap=
+await getDocs(
+collection(
+db,
+"dairyEntries"
+)
+);
+
+
+let html=`
+
+<table>
+
+<tr>
+<th>Type</th>
+<th>मजदूर</th>
+<th>भैंस</th>
+<th>Details</th>
+</tr>
+
+`;
+
+
+snap.forEach(
+(item)=>{
+
+const d=
+item.data();
+
+
+let details="-";
+
+
+if(d.type==="milk"){
+
+details=
+d.milk+
+" L / ₹"+
+d.rate;
+
+}
+
+else{
+
+details=
+d.breed||"-";
+
+}
+
+
+html+=`
+
+<tr>
+
+<td>
+${d.type}
+</td>
+
+<td>
+${d.worker||"-"}
+</td>
+
+<td>
+${d.buffalo||"-"}
+</td>
+
+<td>
+${details}
+</td>
+
+</tr>
+
+`;
+
+});
+
+
+html+=
+"</table>";
+
+
+box.innerHTML=
+html;
+
+}
+
+</script>
+
+</body>
+</html>
