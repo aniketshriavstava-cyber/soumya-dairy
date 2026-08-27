@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SOUMYA DAIRY</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f3f7f4;
+color:#222
+}
+
+.header{
+background:linear-gradient(135deg,#087f3d,#25b968);
+color:white;
+padding:20px;
+text-align:center;
+box-shadow:0 3px 10px #bbb
+}
+
+.header h1{
+margin:0;
+font-size:28px
+}
+
+.header p{
+margin:5px 0 0;
+font-size:13px
+}
+
+.container{
+width:95%;
+max-width:850px;
+margin:15px auto
+}
+
+.card{
+background:white;
+padding:18px;
+margin-bottom:15px;
+border-radius:16px;
+box-shadow:0 3px 12px #ddd
+}
+
+h2{
+margin-top:0;
+color:#087f3d
+}
+
+input,select{
+width:100%;
+padding:13px;
+margin:6px 0 12px;
+border:1px solid #ddd;
+border-radius:8px;
+font-size:15px
+}
+
+button{
+border:0;
+border-radius:8px;
+padding:12px 16px;
+font-weight:bold;
+cursor:pointer
+}
+
+.greenBtn{
+width:100%;
+background:#087f3d;
+color:white;
+font-size:16px
+}
+
+.logout{
+background:#e53935;
+color:white;
+margin-top:10px
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px
+}
+
+.stat{
+background:#eef9f1;
+padding:15px 5px;
+text-align:center;
+border-radius:12px
+}
+
+.stat b{
+display:block;
+font-size:21px;
+color:#087f3d
+}
+
+.stat span{
+font-size:11px;
+color:#666
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:12px
+}
+
+th{
+background:#087f3d;
+color:white;
+padding:10px 5px
+}
+
+td{
+padding:9px 4px;
+text-align:center;
+border-bottom:1px solid #eee
+}
+
+.delete{
+background:#e53935;
+color:white;
+padding:6px 8px
+}
+
+.msg{
+text-align:center;
+font-weight:bold;
+margin-top:10px
+}
+
+#app{
+display:none
+}
+
+.footer{
+text-align:center;
+padding:20px;
+color:#888;
+font-size:12px
+}
+
+@media(max-width:600px){
+
+.stats{
+grid-template-columns:repeat(2,1fr)
+}
+
+table{
+font-size:10px
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>🐃 SOUMYA DAIRY</h1>
+
+<p>Online Dairy Management System</p>
+
+</div>
+
+
+<!-- LOGIN -->
+
+<div class="container" id="loginBox">
+
+<div class="card">
+
+<h2>🔐 Login</h2>
+
+<label>Email</label>
+
+<input
+id="email"
+type="email"
+placeholder="Email डालें"
+>
+
+<label>Password</label>
+
+<input
+id="password"
+type="password"
+placeholder="Password डालें"
+>
+
+<button
+class="greenBtn"
+onclick="login()">
+
+Login करें
+
+</button>
+
+<div
+class="msg"
+id="loginMsg">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- APP -->
+
+<div
+class="container"
+id="app">
+
+
+<!-- ACCOUNT -->
+
+<div class="card">
+
+<h2>👤 Account</h2>
+
+<div id="userEmail"></div>
+
+<button
+class="logout"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<div class="card">
+
+<h2>📊 Dashboard</h2>
+
+<div class="stats">
+
+<div class="stat">
+<b id="buffaloCount">0</b>
+<span>कुल भैंस</span>
+</div>
+
+<div class="stat">
+<b id="milkTotal">0 L</b>
+<span>कुल दूध</span>
+</div>
+
+<div class="stat">
+<b id="saleTotal">₹0</b>
+<span>कुल बिक्री</span>
+</div>
+
+<div class="stat">
+<b id="entryCount">0</b>
+<span>दूध Entries</span>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- WORKER -->
+
+<div class="card">
+
+<h2>👷 मजदूर</h2>
+
+<input
+id="worker"
+type="text"
+placeholder="मजदूर का नाम लिखें"
+>
+
+</div>
+
+
+<!-- BUFFALO ENTRY -->
+
+<div class="card">
+
+<h2>🐃 भैंस की Entry</h2>
+
+<label>भैंस ID / नाम</label>
+
+<input
+id="buffalo"
+type="text"
+placeholder="जैसे BH-001"
+>
+
+<label>नस्ल</label>
+
+<input
+id="breed"
+type="text"
+placeholder="जैसे Murrah"
+>
+
+<label>उम्र</label>
+
+<input
+id="age"
+type="number"
+placeholder="उम्र वर्ष में"
+>
+
+<label>स्थिति</label>
+
+<select id="status">
+
+<option>दूध दे रही है</option>
+<option>गर्भवती</option>
+<option>सूखी</option>
+
+</select>
+
+<button
+class="greenBtn"
+onclick="saveBuffalo()">
+
+🐃 भैंस Save करें
+
+</button>
+
+<div
+class="msg"
+id="buffaloMsg">
+</div>
+
+</div>
+
+
+<!-- MILK ENTRY -->
+
+<div class="card">
+
+<h2>🥛 दूध की Entry</h2>
+
+<label>भैंस ID / नाम</label>
+
+<input
+id="milkBuffalo"
+type="text"
+placeholder="BH-001"
+>
+
+<label>दूध लीटर</label>
+
+<input
+id="milk"
+type="number"
+step="0.1"
+placeholder="जैसे 8.5"
+>
+
+<label>रेट ₹ प्रति लीटर</label>
+
+<input
+id="rate"
+type="number"
+placeholder="जैसे 60"
+>
+
+<label>समय</label>
+
+<select id="shift">
+
+<option>सुबह</option>
+<option>शाम</option>
+
+</select>
+
+<button
+class="greenBtn"
+onclick="saveMilk()">
+
+🥛 दूध Save करें
+
+</button>
+
+<div
+class="msg"
+id="milkMsg">
+</div>
+
+</div>
+
+
+<!-- BUFFALO RECORD -->
+
+<div class="card">
+
+<h2>📋 भैंस का Record</h2>
+
+<div id="buffaloTable">
+Login के बाद record दिखेगा
+</div>
+
+</div>
+
+
+<!-- MILK RECORD -->
+
+<div class="card">
+
+<h2>🥛 दूध का Record</h2>
+
+<div id="milkTable">
+Login के बाद record दिखेगा
+</div>
+
+</div>
+
+</div>
+
+
+<div class="footer">
+
+© 2026 SOUMYA DAIRY<br>
+Online Dairy Management System
+
+</div>
+
+
+<script type="module">
+
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig={
+
+apiKey:
+"AIzaSyCtbpXgCr73z6UN_digd0oQoKPwdDRH0_c",
+
+authDomain:
+"soumya-dairy.firebaseapp.com",
+
+projectId:
+"soumya-dairy",
+
+storageBucket:
+"soumya-dairy.firebasestorage.app",
+
+messagingSenderId:
+"546193027551",
+
+appId:
+"1:546193027551:web:4ad8d012f7c4cd1e21146a",
+
+measurementId:
+"G-Q9M7XQY70J"
+
+};
+
+
+/* START */
+
+const app=
+initializeApp(firebaseConfig);
+
+const auth=
+getAuth(app);
+
+const db=
+getFirestore(app);
+
+
+/* LOGIN */
+
+window.login=async function(){
+
+const email=
+document.getElementById("email")
+.value.trim();
+
+const password=
+document.getElementById("password")
+.value;
+
+const msg=
+document.getElementById("loginMsg");
+
+
+if(!email||!password){
+
+msg.innerText=
+"Email और Password भरें";
+
+return;
+}
+
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+msg.innerText=
+"Login सफल";
+
+}catch(error){
+
+msg.innerText=
+"Login failed";
+
+}
+
+};
+
+
+/* LOGOUT */
+
+window.logout=function(){
+
+signOut(auth);
+
+};
+
+
+/* AUTH */
+
+onAuthStateChanged(
+auth,
+(user)=>{
+
+if(user){
+
+document.getElementById(
+"loginBox"
+).style.display="none";
+
+
+document.getElementById(
+"app"
+).style.display="block";
+
+
+document.getElementById(
+"userEmail"
+).innerText=
+"Login: "+user.email;
+
+
+loadBuffalo();
+
+loadMilk();
+
+}else{
+
+document.getElementById(
+"loginBox"
+).style.display="block";
+
+
+document.getElementById(
+"app"
+).style.display="none";
+
+}
+
+});
+
+
+/* BUFFALO SAVE */
+
+window.saveBuffalo=
+async function(){
+
+const user=
+auth.currentUser;
+
+if(!user){
+
+alert("पहले Login करें");
+
+return;
+
+}
+
+
+const worker=
+document.getElementById(
+"worker"
+).value.trim();
+
+
+const buffalo=
+document.getElementById(
+"buffalo"
+).value.trim();
+
+
+const breed=
+document.getElementById(
+"breed"
+).value.trim();
+
+
+const age=
+document.getElementById(
+"age"
+).value;
+
+
+const status=
+document.getElementById(
+"status"
+).value;
+
+
+if(!worker||!buffalo){
+
+alert(
+"मजदूर और भैंस ID भरें"
+);
+
+return;
+
+}
+
+
+await addDoc(
+collection(db,"dairyEntries"),
+{
+
+type:"buffalo",
+
+worker:worker,
+
+buffalo:buffalo,
+
+breed:breed,
+
+age:age,
+
+status:status,
+
+date:
+new Date()
+.toLocaleDateString("hi-IN"),
+
+time:
+new Date()
+.toLocaleTimeString("hi-IN"),
+
+uid:user.uid
+
+}
+);
+
+
+document.getElementById(
+"buffaloMsg"
+).innerText=
+"✅ Online Save हो गया";
+
+
+document.getElementById(
+"buffalo"
+).value="";
+
+
+document.getElementById(
+"breed"
+).value="";
+
+
+document.getElementById(
+"age"
+).value="";
+
+
+loadBuffalo();
+
+};
+
+
+/* MILK SAVE */
+
+window.saveMilk=
+async function(){
+
+const user=
+auth.currentUser;
+
+if(!user){
+
+alert("पहले Login करें");
+
+return;
+
+}
+
+
+const worker=
+document.getElementById(
+"worker"
+).value.trim();
+
+
+const buffalo=
+document.getElementById(
+"milkBuffalo"
+).value.trim();
+
+
+const milk=
+Number(
+document.getElementById(
+"milk"
+).value
+);
+
+
+const rate=
+Number(
+document.getElementById(
+"rate"
+).value
+);
+
+
+const shift=
+document.getElementById(
+"shift"
+).value;
+
+
+if(
+!worker||
+!buffalo||
+!milk||
+!rate
+){
+
+alert(
+"सभी जानकारी भरें"
+);
+
+return;
+
+}
+
+
+const total=
+milk*rate;
+
+
+await addDoc(
+collection(db,"dairyEntries"),
+{
+
+type:"milk",
+
+worker:worker,
+
+buffalo:buffalo,
+
+milk:milk,
+
+rate:rate,
+
+total:total,
+
+shift:shift,
+
+date:
+new Date()
+.toLocaleDateString("hi-IN"),
+
+time:
+new Date()
+.toLocaleTimeString("hi-IN"),
+
+uid:user.uid
+
+}
+);
+
+
+document.getElementById(
+"milkMsg"
+).innerText=
+"✅ दूध Online Save हो गया";
+
+
+document.getElementById(
+"milkBuffalo"
+).value="";
+
+
+document.getElementById(
+"milk"
+).value="";
+
+
+document.getElementById(
+"rate"
+).value="";
+
+
+loadMilk();
+
+};
+
+
+/* LOAD BUFFALO */
+
+async function loadBuffalo(){
+
+const box=
+document.getElementById(
+"buffaloTable"
+);
+
+
+const snap=
+await getDocs(
+collection(
+db,
+"dairyEntries"
+)
+);
+
+
+let html=`
+
+<table>
+
+<tr>
+
+<th>तारीख</th>
+<th>मजदूर</th>
+<th>भैंस</th>
+<th>नस्ल</th>
+<th>स्थिति</th>
+<th>Delete</th>
+
+</tr>
+
+`;
+
+
+let count=0;
+
+
+snap.forEach(item=>{
+
+const b=item.data();
+
+
+if(b.type!=="buffalo")
+return;
+
+
+count++;
+
+
+html+=`
+
+<tr>
+
+<td>${b.date}</td>
+
+<td>${b.worker}</td>
+
+<td>${b.buffalo}</td>
+
+<td>${b.breed||"-"}</td>
+
+<td>${b.status}</td>
+
+<td>
+
+<button
+class="delete"
+onclick=
+"removeEntry('${item.id}')">
+
+X
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+
+html+=
+"</table>";
+
+
+box.innerHTML=
+count
+?html
+:"<p>अभी कोई Entry नहीं है</p>";
+
+
+document.getElementById(
+"buffaloCount"
+).innerText=count;
+
+}
+
+
+/* LOAD MILK */
+
+async function loadMilk(){
+
+const box=
+document.getElementById(
+"milkTable"
+);
+
+
+const snap=
+await getDocs(
+collection(
+db,
+"dairyEntries"
+)
+);
+
+
+let html=`
+
+<table>
+
+<tr>
+
+<th>तारीख</th>
+<th>मजदूर</th>
+<th>भैंस</th>
+<th>समय</th>
+<th>दूध</th>
+<th>रेट</th>
+<th>कुल</th>
+<th>Delete</th>
+
+</tr>
+
+`;
+
+
+let milkTotal=0;
+
+let saleTotal=0;
+
+let count=0;
+
+
+snap.forEach(item=>{
+
+const m=item.data();
+
+
+if(m.type!=="milk")
+return;
+
+
+count++;
+
+milkTotal+=
+Number(m.milk);
+
+
+saleTotal+=
+Number(m.total);
+
+
+html+=`
+
+<tr>
+
+<td>${m.date}</td>
+
+<td>${m.worker}</td>
+
+<td>${m.buffalo}</td>
+
+<td>${m.shift}</td>
+
+<td>${m.milk} L</td>
+
+<td>₹${m.rate}</td>
+
+<td>₹${m.total}</td>
+
+<td>
+
+<button
+class="delete"
+onclick=
+"removeEntry('${item.id}')">
+
+X
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+
+html+=
+"</table>";
+
+
+box.innerHTML=
+count
+?html
+:"<p>अभी कोई दूध Entry नहीं है</p>";
+
+
+document.getElementById(
+"milkTotal"
+).innerText=
+milkTotal.toFixed(1)+" L";
+
+
+document.getElementById(
+"saleTotal"
+).innerText=
+"₹"+
+saleTotal.toLocaleString(
+"en-IN"
+);
+
+
+document.getElementById(
+"entryCount"
+).innerText=count;
+
+}
+
+
+/* DELETE */
+
+window.removeEntry=
+async function(id){
+
+if(
+!confirm(
+"क्या यह Entry Delete करें?"
+)
+)
+return;
+
+
+await deleteDoc(
+doc(
+db,
+"dairyEntries",
+id
+)
+);
+
+
+loadBuffalo();
+
+loadMilk();
+
+};
+
+</script>
+
+</body>
+</html>
