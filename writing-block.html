@@ -1,0 +1,326 @@
+```html
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>REWARD TRACKER</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#101820;
+  color:white;
+}
+.header{
+  padding:20px;
+  text-align:center;
+  background:#172b3a;
+}
+.container{
+  width:94%;
+  max-width:700px;
+  margin:15px auto;
+}
+.card{
+  background:#1c2c38;
+  padding:18px;
+  margin-bottom:15px;
+  border-radius:15px;
+}
+input,select{
+  width:100%;
+  padding:13px;
+  margin:7px 0;
+  border-radius:8px;
+  border:1px solid #506070;
+}
+button{
+  width:100%;
+  padding:13px;
+  border:0;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.btn{
+  background:#f5b700;
+  color:#111;
+}
+.logout{
+  background:#d43d3d;
+  color:white;
+}
+#app{display:none}
+#adminPanel{display:none}
+.badge{
+  display:inline-block;
+  padding:7px 12px;
+  background:#f5b700;
+  color:#111;
+  border-radius:20px;
+  font-weight:bold;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+th,td{
+  padding:8px;
+  border-bottom:1px solid #506070;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>🎁 REWARD TRACKER</h1>
+  <p>Admin & Worker Entry System</p>
+</div>
+
+<div class="container">
+
+<div class="card" id="loginBox">
+  <h2>🔐 Login</h2>
+
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button class="btn" onclick="login()">LOGIN</button>
+
+  <p id="loginMsg"></p>
+</div>
+
+<div id="app">
+
+  <div class="card">
+    <h2>👤 Account</h2>
+    <p id="userEmail"></p>
+    <span class="badge" id="role"></span>
+    <br><br>
+    <button class="logout" onclick="logout()">LOGOUT</button>
+  </div>
+
+  <div class="card">
+    <h2>🆔 Reward Entry</h2>
+
+    <input id="workerName" placeholder="Worker Name">
+    <input id="playerUid" placeholder="Player UID">
+    <input id="rewardAmount" type="number" placeholder="Reward / Diamond Amount">
+
+    <button class="btn" onclick="saveEntry()">SAVE ENTRY</button>
+
+    <p id="saveMsg"></p>
+  </div>
+
+  <div class="card" id="adminPanel">
+    <h2>👨‍💼 Admin Dashboard</h2>
+    <p>Total Reward Entries: <b id="totalCount">0</b></p>
+    <div id="records">Loading...</div>
+  </div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+/* YOUR FIREBASE CONFIG */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCtbpXgCr73z6UN_digd0oQoKPwdDRH0_c",
+  authDomain: "soumya-dairy.firebaseapp.com",
+  projectId: "soumya-dairy",
+  storageBucket: "soumya-dairy.firebasestorage.app",
+  messagingSenderId: "546193027551",
+  appId: "1:546193027551:web:4ad8d012f7c4cd1e21146a"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+/* ADMIN EMAIL */
+
+const ADMIN_EMAIL = "im9208455049@gmail.com";
+
+
+window.login = async function(){
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if(!email || !password){
+    document.getElementById("loginMsg").innerText =
+    "Email और Password भरें";
+    return;
+  }
+
+  try{
+    await signInWithEmailAndPassword(auth,email,password);
+  }catch(e){
+    document.getElementById("loginMsg").innerText =
+    "Login failed";
+  }
+};
+
+
+window.logout = function(){
+  signOut(auth);
+};
+
+
+onAuthStateChanged(auth,(user)=>{
+
+  if(!user){
+    document.getElementById("loginBox").style.display="block";
+    document.getElementById("app").style.display="none";
+    return;
+  }
+
+  document.getElementById("loginBox").style.display="none";
+  document.getElementById("app").style.display="block";
+
+  document.getElementById("userEmail").innerText = user.email;
+
+  if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
+
+    document.getElementById("role").innerText = "ADMIN";
+    document.getElementById("adminPanel").style.display="block";
+    loadRecords();
+
+  }else{
+
+    document.getElementById("role").innerText = "WORKER";
+    document.getElementById("adminPanel").style.display="none";
+
+  }
+
+});
+
+
+window.saveEntry = async function(){
+
+  const user = auth.currentUser;
+
+  if(!user) return;
+
+  const workerName =
+    document.getElementById("workerName").value.trim();
+
+  const playerUid =
+    document.getElementById("playerUid").value.trim();
+
+  const rewardAmount =
+    Number(document.getElementById("rewardAmount").value);
+
+  if(!workerName || !playerUid || !rewardAmount){
+    alert("सभी जानकारी भरें");
+    return;
+  }
+
+  try{
+
+    await addDoc(collection(db,"rewardEntries"),{
+
+      workerName: workerName,
+      playerUid: playerUid,
+      rewardAmount: rewardAmount,
+      workerUid: user.uid,
+      createdAt: new Date().toISOString()
+
+    });
+
+    document.getElementById("saveMsg").innerText =
+      "✅ Entry Save हो गई";
+
+    document.getElementById("playerUid").value="";
+    document.getElementById("rewardAmount").value="";
+
+  }catch(e){
+
+    document.getElementById("saveMsg").innerText =
+      "❌ Save नहीं हुई";
+
+  }
+
+};
+
+
+async function loadRecords(){
+
+  const box = document.getElementById("records");
+
+  try{
+
+    const snap =
+      await getDocs(collection(db,"rewardEntries"));
+
+    document.getElementById("totalCount").innerText =
+      snap.size;
+
+    let html = `
+    <table>
+      <tr>
+        <th>Worker</th>
+        <th>Player UID</th>
+        <th>Reward</th>
+      </tr>`;
+
+    snap.forEach((item)=>{
+
+      const d=item.data();
+
+      html += `
+      <tr>
+        <td>${d.workerName}</td>
+        <td>${d.playerUid}</td>
+        <td>${d.rewardAmount}</td>
+      </tr>`;
+
+    });
+
+    html += "</table>";
+
+    box.innerHTML=html;
+
+  }catch(e){
+
+    box.innerHTML="Records load नहीं हुए";
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
+```
